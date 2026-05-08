@@ -59,4 +59,25 @@ contract GameAMMTest is Test {
 
         vm.stopPrank();
     }
+    function testFuzzSwapKeepsK(uint96 liquidity, uint96 swapAmount) public {
+    uint256 liq = bound(uint256(liquidity), 100 ether, 1_000 ether);
+    uint256 amount = bound(uint256(swapAmount), 1 ether, liq / 10);
+
+    tokenA.mint(user, liq + amount);
+    tokenB.mint(user, liq);
+
+    vm.startPrank(user);
+
+    amm.addLiquidity(liq, liq);
+
+    uint256 kBefore = amm.reserveA() * amm.reserveB();
+
+    amm.swap(address(tokenA), amount, 1);
+
+    uint256 kAfter = amm.reserveA() * amm.reserveB();
+
+    assertGe(kAfter, kBefore);
+
+    vm.stopPrank();
+}
 }
