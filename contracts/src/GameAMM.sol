@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract GameAMM is ERC20 {
@@ -17,6 +18,7 @@ contract GameAMM is ERC20 {
     uint256 public constant FEE_DENOMINATOR = 1000;
 
     event LiquidityAdded(address indexed provider, uint256 amountA, uint256 amountB, uint256 lpMinted);
+    event LiquidityRemoved(address indexed provider, uint256 lpBurned, uint256 amountA, uint256 amountB);
     event Swapped(address indexed user, address tokenIn, uint256 amountIn, uint256 amountOut);
 
     constructor(address _tokenA, address _tokenB) ERC20("Game AMM LP", "GAMMLP") {
@@ -49,6 +51,28 @@ contract GameAMM is ERC20 {
         _mint(msg.sender, lpMinted);
 
         emit LiquidityAdded(msg.sender, amountA, amountB, lpMinted);
+    }
+
+    function removeLiquidity(uint256 lpAmount) external returns (uint256 amountA, uint256 amountB) {
+        require(lpAmount > 0, "AMM: zero LP");
+        require(balanceOf(msg.sender) >= lpAmount, "AMM: insufficient LP");
+
+        uint256 supply = totalSupply();
+
+        amountA = (lpAmount * reserveA) / supply;
+        amountB = (lpAmount * reserveB) / supply;
+
+        require(amountA > 0 && amountB > 0, "AMM: zero output");
+
+        _burn(msg.sender, lpAmount);
+
+        reserveA -= amountA;
+        reserveB -= amountB;
+
+        tokenA.safeTransfer(msg.sender, amountA);
+        tokenB.safeTransfer(msg.sender, amountB);
+
+        emit LiquidityRemoved(msg.sender, lpAmount, amountA, amountB);
     }
 
     function swap(address tokenIn, uint256 amountIn, uint256 minAmountOut) external returns (uint256 amountOut) {
@@ -86,8 +110,10 @@ contract GameAMM is ERC20 {
 
     function sqrt(uint256 x) internal pure returns (uint256 y) {
         if (x == 0) return 0;
+
         uint256 z = (x + 1) / 2;
         y = x;
+
         while (z < y) {
             y = z;
             z = (x / z + z) / 2;
