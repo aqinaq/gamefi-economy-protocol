@@ -11,7 +11,7 @@ contract GameConfigV1 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     function initialize(uint256 _dropRate, uint256 _craftingCost) public initializer {
         __Ownable_init(msg.sender);
-        __UUPSUpgradeable_init();
+
 
         dropRate = _dropRate;
         craftingCost = _craftingCost;
