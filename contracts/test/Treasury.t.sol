@@ -15,12 +15,15 @@ contract TreasuryTest is Test {
     }
 
     function testReceiveETH() public {
-        payable(address(treasury)).transfer(1 ether);
+        (bool success, ) = payable(address(treasury)).call{value: 1 ether}("");
+        require(success, "ETH send failed");
+
         assertEq(address(treasury).balance, 1 ether);
     }
 
     function testWithdrawETH() public {
-        payable(address(treasury)).transfer(1 ether);
+        (bool success, ) = payable(address(treasury)).call{value: 1 ether}("");
+        require(success, "ETH send failed");
 
         treasury.withdrawETH(user, 0.5 ether);
 
@@ -29,7 +32,8 @@ contract TreasuryTest is Test {
     }
 
     function testOnlyOwnerCanWithdraw() public {
-        payable(address(treasury)).transfer(1 ether);
+        (bool success, ) = payable(address(treasury)).call{value: 1 ether}("");
+        require(success, "ETH send failed");
 
         vm.prank(user);
         vm.expectRevert();
