@@ -28,6 +28,13 @@ contract GameConfigUpgradeTest is Test {
         assertEq(config.craftingCost(), 100 ether);
         assertEq(config.version(), "V1");
     }
+    function testSetConfigValues() public {
+    config.setDropRate(25);
+    config.setCraftingCost(250 ether);
+
+    assertEq(config.dropRate(), 25);
+    assertEq(config.craftingCost(), 250 ether);
+}
 
     function testUpgradeToV2() public {
         GameConfigV2 implementationV2 = new GameConfigV2();

@@ -4,3 +4,4 @@ out = "contracts/out"
 libs = ["contracts/lib"]
 test = "contracts/test"
 script = "contracts/script"
+no_match_coverage = "contracts/lib/*"
