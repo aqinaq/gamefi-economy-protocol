@@ -34,16 +34,55 @@ contract GameGovernorTest is Test {
 
         vm.prank(voter);
         token.delegate(voter);
+
+        vm.roll(block.number + 1);
+        vm.roll(block.number + 1);
     }
 
     function testGovernorParameters() public view {
         assertEq(governor.votingDelay(), 7200);
         assertEq(governor.votingPeriod(), 50400);
         assertEq(governor.quorumNumerator(), 4);
-        assertEq(owner(treasury), address(timelock));
+        assertEq(treasury.owner(), address(timelock));
     }
 
-    function owner(Treasury t) internal view returns (address) {
-        return t.owner();
+    function testProposalLifecycle() public {
+        address[] memory targets = new address[](1);
+        uint256[] memory values = new uint256[](1);
+        bytes[] memory calldatas = new bytes[](1);
+
+        targets[0] = address(treasury);
+        values[0] = 0;
+        calldatas[0] = abi.encodeWithSelector(
+            bytes4(keccak256("transferOwnership(address)")),
+            voter
+        );
+
+        string memory description = "Transfer treasury ownership to voter";
+
+        vm.prank(voter);
+        uint256 proposalId = governor.propose(
+            targets,
+            values,
+            calldatas,
+            description
+        );
+
+        vm.roll(block.number + governor.votingDelay() + 1);
+
+        vm.prank(voter);
+        governor.castVote(proposalId, 1);
+
+        vm.roll(block.number + governor.votingPeriod() + 1);
+
+        bytes32 descriptionHash = keccak256(bytes(description));
+
+        governor.queue(targets, values, calldatas, descriptionHash);
+
+        vm.warp(block.timestamp + 2 days + 1);
+
+        governor.execute(targets, values, calldatas, descriptionHash);
+
+        assertEq(treasury.owner(), voter);
     }
 }
