@@ -1,0 +1,45 @@
+'forge clean' running (wd: /Users/macbookair/gamefi-economy-protocol/contracts)
+'forge config --json' running
+'forge build --build-info src' running (wd: /Users/macbookair/gamefi-economy-protocol/contracts)
+INFO:Detectors:
+Detector: unused-return
+PriceOracle.getPrice() (src/PriceOracle.sol#30-37) ignores return value by (None,answer,None,updatedAt,None) = feed.latestRoundData() (src/PriceOracle.sol#31)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return
+INFO:Detectors:
+Detector: reentrancy-events
+Reentrancy in Treasury.withdrawETH(address,uint256) (src/Treasury.sol#16-24):
+	External calls:
+	- (success,None) = to.call{value: amount}() (src/Treasury.sol#20)
+	Event emitted after the call(s):
+	- EthWithdrawn(to,amount) (src/Treasury.sol#23)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+INFO:Detectors:
+Detector: timestamp
+PriceOracle.getPrice() (src/PriceOracle.sol#30-37) uses timestamp for comparisons
+	Dangerous comparisons:
+	- block.timestamp - updatedAt > maxStaleness (src/PriceOracle.sol#34)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+Detector: assembly
+SumUtils.sumYul(uint256[]) (src/SumUtils.sol#11-21) uses assembly
+	- INLINE ASM (src/SumUtils.sol#12-20)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+INFO:Detectors:
+Detector: low-level-calls
+Low level call in Treasury.withdrawETH(address,uint256) (src/Treasury.sol#16-24):
+	- (success,None) = to.call{value: amount}() (src/Treasury.sol#20)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls
+INFO:Detectors:
+Detector: naming-convention
+Parameter GameConfigV1.initialize(uint256,uint256)._dropRate (src/GameConfigV1.sol#12) is not in mixedCase
+Parameter GameConfigV1.initialize(uint256,uint256)._craftingCost (src/GameConfigV1.sol#12) is not in mixedCase
+Parameter GameConfigV1.setDropRate(uint256)._dropRate (src/GameConfigV1.sol#20) is not in mixedCase
+Parameter GameConfigV1.setCraftingCost(uint256)._craftingCost (src/GameConfigV1.sol#24) is not in mixedCase
+Parameter GameConfigV2.setRareDropRate(uint256)._rareDropRate (src/GameConfigV2.sol#9) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+INFO:Detectors:
+Detector: too-many-digits
+GameAMMFactory.predictAMMAddress(address,address,bytes32) (src/GameAMMFactory.sol#25-40) uses literals with too many digits:
+	- bytecode = abi.encodePacked(type()(GameAMM).creationCode,abi.encode(tokenA,tokenB)) (src/GameAMMFactory.sol#30-33)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#too-many-digits
+INFO:Slither:src analyzed (84 contracts with 101 detectors), 11 result(s) found
