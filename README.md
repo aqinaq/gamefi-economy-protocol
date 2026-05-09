@@ -80,3 +80,31 @@ Proposal threshold: 10,000 GTK
 Project Status
 
 Smart contract core is implemented and tested. Frontend, final L2 deployment, verified addresses, full audit report, and final presentation remain.
+## Base Sepolia Deployment
+
+Deployment wallet:
+
+```txt
+0x7aAc4872D0Eac6a43A1aeB20BC53310233d18854
+
+Network:
+
+Base Sepolia
+Chain ID: 84532
+Deployed Contracts
+Contract	Address
+GameToken	0x86281544e8f63E0aca012a1b7013D995613844b1
+GameItems	0xf556B42B72d29b4D6189c6d00Ef3A83C0774Ae3f
+Treasury	0xc1CB2cF7Ce07f809A740867DAB63C0A4466Ce337
+GameAMMFactory	0x019ee2B7c6eB989735df52e6eb5827F0BF8aB2a7
+GameVault	0x123579f7F5989C8DB92f2a74A4D2D42C9cb56E9d
+GameConfigProxy	0x8261Df7e6f13587a0DcFA3bf7a984b1dED05CAf2
+Timelock	0xD8D722F3871Ec59665163C7C7665188A6E3A6BA2
+Governance Deployment Note
+
+GameGovernor was fully implemented and tested locally, including the full proposal lifecycle. However, live deployment on Base Sepolia failed because the OpenZeppelin Governor bytecode exceeded the EIP-170 contract size limit.
+
+Local governance test result:
+
+GameGovernorTest: 2 passed, 0 failed
+Full test suite: 27 passed, 0 failed
