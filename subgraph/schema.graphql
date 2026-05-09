@@ -1,0 +1,31 @@
+type LiquidityAdded @entity {
+  id: ID!
+  provider: Bytes!
+  amountA: BigInt!
+  amountB: BigInt!
+  lpMinted: BigInt!
+}
+
+type LiquidityRemoved @entity {
+  id: ID!
+  provider: Bytes!
+  lpBurned: BigInt!
+  amountA: BigInt!
+  amountB: BigInt!
+}
+
+type Swap @entity {
+  id: ID!
+  user: Bytes!
+  tokenIn: Bytes!
+  amountIn: BigInt!
+  amountOut: BigInt!
+}
+
+type AMMCreated @entity {
+  id: ID!
+  amm: Bytes!
+  tokenA: Bytes!
+  tokenB: Bytes!
+  salt: Bytes!
+}

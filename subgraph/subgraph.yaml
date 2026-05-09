@@ -1,0 +1,26 @@
+specVersion: 1.0.0
+description: GameFi Economy Protocol Subgraph
+schema:
+  file: ./schema.graphql
+
+dataSources:
+  - kind: ethereum
+    name: GameAMMFactory
+    network: base-sepolia
+    source:
+      address: "0x0000000000000000000000000000000000000000"
+      abi: GameAMMFactory
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - AMMCreated
+      abis:
+        - name: GameAMMFactory
+          file: ../out/GameAMMFactory.sol/GameAMMFactory.json
+      eventHandlers:
+        - event: AMMCreated(indexed address,indexed address,indexed address,bytes32)
+          handler: handleAMMCreated
+      file: ./src/mapping.ts
