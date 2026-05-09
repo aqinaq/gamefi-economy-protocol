@@ -1,13 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameFi Economy Protocol</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 40px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 900px;
+      margin-bottom: 20px;
+    }
+    code {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+  <h1>GameFi Economy Protocol</h1>
+
+  <div class="card">
+    <h2>Base Sepolia Deployment</h2>
+    <p><strong>Network:</strong> Base Sepolia</p>
+    <p><strong>Chain ID:</strong> 84532</p>
+  </div>
+
+  <div class="card">
+    <h2>Contracts</h2>
+    <p>GameToken: <code>0x86281544e8f63E0aca012a1b7013D995613844b1</code></p>
+    <p>GameItems: <code>0xf556B42B72d29b4D6189c6d00Ef3A83C0774Ae3f</code></p>
+    <p>Treasury: <code>0xc1CB2cF7Ce07f809A740867DAB63C0A4466Ce337</code></p>
+    <p>GameAMMFactory: <code>0x019ee2B7c6eB989735df52e6eb5827F0BF8aB2a7</code></p>
+    <p>GameVault: <code>0x123579f7F5989C8DB92f2a74A4D2D42C9cb56E9d</code></p>
+    <p>GameConfigProxy: <code>0x8261Df7e6f13587a0DcFA3bf7a984b1dED05CAf2</code></p>
+    <p>Timelock: <code>0xD8D722F3871Ec59665163C7C7665188A6E3A6BA2</code></p>
+  </div>
+
+  <div class="card">
+    <h2>Protocol Features</h2>
+    <ul>
+      <li>ERC20 governance token</li>
+      <li>ERC1155 game items</li>
+      <li>AMM factory with CREATE2</li>
+      <li>ERC4626 vault</li>
+      <li>DAO governance and Timelock</li>
+      <li>Upgradeable game configuration</li>
+      <li>Oracle stale price protection</li>
+    </ul>
+  </div>
+</body>
 </html>
