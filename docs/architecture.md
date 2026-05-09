@@ -127,3 +127,25 @@ ERC4626 vault standard
 ERC1155 multi-token standard
 ERC20Votes governance token
 Oracle adapter pattern
+
+# Architecture Diagram
+
+```mermaid
+graph TD
+    User --> GameToken
+    User --> GameItems
+    User --> GameAMM
+    User --> GameVault
+
+    GameAMMFactory --> GameAMM
+    GameVault --> GameToken
+
+    GameGovernor --> Timelock
+    Timelock --> Treasury
+    Timelock --> GameConfigProxy
+
+    GameConfigProxy --> GameConfigV1
+    GameConfigV1 --> GameConfigV2
+
+    PriceOracle --> ChainlinkFeed
+    SumUtils --> YulAssembly
