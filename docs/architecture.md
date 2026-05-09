@@ -4,6 +4,8 @@
 
 GameFi Economy Protocol is a decentralized game economy system that combines fungible tokens, NFT-style game items, AMM liquidity, vault deposits, DAO governance, upgradeable configuration, and oracle-based price validation.
 
+---
+
 ## Main Components
 
 ### GameToken
@@ -25,48 +27,56 @@ GameFi Economy Protocol is a decentralized game economy system that combines fun
 
 The AMM uses the formula:
 
-```txt
+```
 x * y = k
-GameAMMFactory
+```
 
-GameAMMFactory deploys new AMM pools using both normal deployment and deterministic CREATE2 deployment.
+### GameAMMFactory
 
-GameVault
+`GameAMMFactory` deploys new AMM pools using both normal deployment and deterministic CREATE2 deployment.
 
-GameVault is an ERC4626 vault that accepts GameToken deposits and issues vault shares.
+### GameVault
 
-Treasury
+`GameVault` is an ERC4626 vault that accepts GameToken deposits and issues vault shares.
 
-Treasury holds protocol ETH and allows withdrawals only by the owner. In the governance setup, ownership is transferred to the Timelock.
+### Treasury
 
-GameGovernor and Timelock
+`Treasury` holds protocol ETH and allows withdrawals only by the owner. In the governance setup, ownership is transferred to the Timelock.
 
-GameGovernor enables DAO governance. Proposals are created, voted on, queued, and executed through the Timelock.
+### GameGovernor and Timelock
 
-Governance flow:
+`GameGovernor` enables DAO governance. Proposals are created, voted on, queued, and executed through the Timelock.
 
+**Governance flow:**
+
+```
 Proposal → Voting Delay → Voting Period → Queue → Timelock Delay → Execute
-GameConfigV1 and GameConfigV2
+```
+
+### GameConfigV1 and GameConfigV2
 
 The game configuration is upgradeable using the UUPS proxy pattern.
 
-GameConfigV1 stores:
+`GameConfigV1` stores:
+- Drop rate
+- Crafting cost
 
-Drop rate
-Crafting cost
+`GameConfigV2` adds:
+- Rare drop rate
 
-GameConfigV2 adds:
+### PriceOracle
 
-Rare drop rate
-PriceOracle
+`PriceOracle` reads price data from a Chainlink-style feed and rejects stale or invalid price data.
 
-PriceOracle reads price data from a Chainlink-style feed and rejects stale or invalid price data.
+### SumUtils
 
-SumUtils
+`SumUtils` compares normal Solidity logic with inline Yul assembly to demonstrate low-level optimization.
 
-SumUtils compares normal Solidity logic with inline Yul assembly to demonstrate low-level optimization.
+---
 
-Deployment Architecture
+## Deployment Architecture
+
+```
 Deployer
    |
    |-- GameToken
@@ -78,57 +88,75 @@ Deployer
    |-- Timelock
    |-- GameGovernor
    |-- Treasury ownership transferred to Timelock
-Security Model
+```
+
+---
+
+## Security Model
 
 The system uses:
 
-OpenZeppelin audited base contracts
-Ownable access control
-Timelock-controlled treasury
-UUPS upgrade authorization
-Stale oracle price protection
-Unit and fuzz testing
-Slither static analysis
-Testing Strategy
+- OpenZeppelin audited base contracts
+- Ownable access control
+- Timelock-controlled treasury
+- UUPS upgrade authorization
+- Stale oracle price protection
+- Unit and fuzz testing
+- Slither static analysis
+
+---
+
+## Testing Strategy
 
 The test suite covers:
 
-ERC20 minting
-ERC1155 minting and batch minting
-Treasury deposits and withdrawals
-AMM liquidity and swaps
-AMM fuzz invariant for constant product
-Factory deployment and CREATE2 prediction
-UUPS upgrade from V1 to V2
-Oracle valid, invalid, and stale price checks
-Governor proposal lifecycle
-ERC4626 deposit and withdrawal
-Coverage
+- ERC20 minting
+- ERC1155 minting and batch minting
+- Treasury deposits and withdrawals
+- AMM liquidity and swaps
+- AMM fuzz invariant for constant product
+- Factory deployment and CREATE2 prediction
+- UUPS upgrade from V1 to V2
+- Oracle valid, invalid, and stale price checks
+- Governor proposal lifecycle
+- ERC4626 deposit and withdrawal
 
-Latest coverage:
+### Coverage
 
-Line coverage: 92.41%
-Statement coverage: 91.24%
-Branch coverage: 54.05%
-Function coverage: 89.47%
-Base Sepolia Deployment
+| Metric | Coverage |
+|---|---|
+| Line Coverage | 92.41% |
+| Statement Coverage | 91.24% |
+| Branch Coverage | 54.05% |
+| Function Coverage | 89.47% |
+
+---
+
+## Base Sepolia Deployment
 
 Most core contracts were deployed to Base Sepolia.
 
-GameGovernor deployment was tested locally but exceeded the EIP-170 contract size limit during live deployment due to OpenZeppelin Governor bytecode size. The governance lifecycle is still fully covered by local tests.
+`GameGovernor` deployment was tested locally but exceeded the EIP-170 contract size limit during live deployment due to OpenZeppelin Governor bytecode size. The governance lifecycle is still fully covered by local tests.
 
-Design Patterns Used
-Factory pattern
-CREATE2 deterministic deployment
-UUPS upgradeability
-DAO governance
-Timelock control
-ERC4626 vault standard
-ERC1155 multi-token standard
-ERC20Votes governance token
-Oracle adapter pattern
+---
 
-# Architecture Diagram
+## Design Patterns Used
+
+| Pattern | Applied In |
+|---|---|
+| Factory pattern | `GameAMMFactory` |
+| CREATE2 deterministic deployment | `GameAMMFactory` |
+| UUPS upgradeability | `GameConfigProxy` |
+| DAO governance | `GameGovernor` |
+| Timelock control | `Timelock` → `Treasury`, `GameConfigProxy` |
+| ERC4626 vault standard | `GameVault` |
+| ERC1155 multi-token standard | `GameItems` |
+| ERC20Votes governance token | `GameToken` |
+| Oracle adapter pattern | `PriceOracle` |
+
+---
+
+## Architecture Diagram
 
 ```mermaid
 graph TD
@@ -149,3 +177,4 @@ graph TD
 
     PriceOracle --> ChainlinkFeed
     SumUtils --> YulAssembly
+```
